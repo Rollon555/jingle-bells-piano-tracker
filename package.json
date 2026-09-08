@@ -1,0 +1,18 @@
+{
+  "name": "jingle-bells-piano-tracker",
+  "version": "1.0.0",
+  "description": "🎹 Jingle Bells Piano Performance Tracker - Real-time attendance system",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.4"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
