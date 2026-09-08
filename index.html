@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jingle Bells | Piano Performance Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">🔔 🎹 Jingle Bells</h1>
+                <p class="header-subtitle">Piano Performance Tracker</p>
+                <div class="piano-keys-decoration"></div>
+            </div>
+            <div class="snowflakes-container" aria-hidden="true"></div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>กำลังโหลดข้อมูล...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state" style="display: none;">
+                <p class="error-message" id="errorMessage"></p>
+                <button class="btn btn-retry" id="retryBtn">ลองใหม่</button>
+            </div>
+
+            <!-- Content -->
+            <div id="contentState" style="display: none;">
+                <!-- Auth Section -->
+                <section class="auth-section">
+                    <button id="lockBtn" class="btn btn-lock" aria-label="ปลดล็อกการบันทึกผล">
+                        🔒 ปลดล็อกการบันทึกผล
+                    </button>
+                    <div id="lockStatus" class="lock-status" style="display: none;">
+                        🔓 โหมดบันทึกผล
+                    </div>
+                </section>
+
+                <!-- Class Selection Section -->
+                <section class="class-section">
+                    <h2 class="section-title">🎹 เลือกชั้นเรียน</h2>
+                    
+                    <div class="class-controls">
+                        <select id="classSelect" class="class-dropdown" aria-label="เลือกชั้นเรียน">
+                            <option value="">-- เลือกชั้นเรียน --</option>
+                        </select>
+
+                        <button id="addClassBtn" class="btn btn-secondary" aria-label="เพิ่มชั้นเรียน">
+                            + เพิ่มชั้นเรียน
+                        </button>
+
+                        <button id="editClassBtn" class="btn btn-secondary" aria-label="แก้ไขชั้นเรียน" disabled>
+                            ✏️ แก้ไข
+                        </button>
+
+                        <button id="deleteClassBtn" class="btn btn-danger" aria-label="ลบชั้นเรียน" disabled>
+                            🗑️ ลบ
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Summary Stats Section -->
+                <section class="stats-section">
+                    <div class="stat-card stat-total">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <div class="stat-label">ทั้งหมด</div>
+                            <div class="stat-number" id="totalCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-passed">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-label">ผ่านแล้ว</div>
+                            <div class="stat-number" id="passedCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-pending">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <div class="stat-label">ยังไม่ผ่าน</div>
+                            <div class="stat-number" id="pendingCount">0</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Students Section -->
+                <section class="students-section">
+                    <div class="students-header">
+                        <h2 class="section-title">🎶 รายชื่อผู้เข้าร่วมทั้งหมด</h2>
+                        <div class="students-actions">
+                            <button id="addStudentBtn" class="btn btn-primary" aria-label="เพิ่มรายชื่อ" disabled>
+                                + เพิ่มรายชื่อ
+                            </button>
+                            <button id="resetBtn" class="btn btn-warning" aria-label="รีเซ็ตผลทั้งหมด" disabled>
+                                ↻ รีเซ็ตผลทั้งหมด
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="studentsList" class="students-list"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>🔐 กรอกรหัสผ่าน</h2>
+            <input
+                type="password"
+                id="passwordInput"
+                class="password-input"
+                placeholder="กรอกรหัสผ่าน"
+                aria-label="รหัสผ่าน"
+            />
+            <div id="passwordError" class="error-message" style="display: none;"></div>
+            <div class="modal-actions">
+                <button id="submitPasswordBtn" class="btn btn-primary">ยืนยัน</button>
+                <button id="cancelPasswordBtn" class="btn btn-secondary">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class Name Modal -->
+    <div id="classNameModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2 id="classModalTitle">เพิ่มชั้นเรียน</h2>
+            <input
+                type="text"
+                id="classNameInput"
+                class="text-input"
+                placeholder="ชื่อชั้นเรียน"
+                aria-label="ชื่อชั้นเรียน"
+            />
+            <div id="classError" class="error-message" style="display: none;"></div>
+            <div class="modal-actions">
+                <button id="submitClassBtn" class="btn btn-primary">ยืนยัน</button>
+                <button id="cancelClassBtn" class="btn btn-secondary">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Name Modal -->
+    <div id="studentNameModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>เพิ่มรายชื่อผู้เข้าร่วม</h2>
+            <input
+                type="text"
+                id="studentNameInput"
+                class="text-input"
+                placeholder="ชื่อ-นามสกุล"
+                aria-label="ชื่อ-นามสกุล"
+            />
+            <div id="studentError" class="error-message" style="display: none;"></div>
+            <div class="modal-actions">
+                <button id="submitStudentBtn" class="btn btn-primary">ยืนยัน</button>
+                <button id="cancelStudentBtn" class="btn btn-secondary">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2 id="confirmTitle">ยืนยันการทำงาน</h2>
+            <p id="confirmMessage"></p>
+            <div class="modal-actions">
+                <button id="confirmBtn" class="btn btn-danger">ยืนยัน</button>
+                <button id="cancelConfirmBtn" class="btn btn-secondary">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
